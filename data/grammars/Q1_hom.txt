@@ -1,0 +1,10 @@
+S : A B
+A : 4
+B : S D
+D : 3
+S : C E
+C : 2
+E : S F
+F : 1
+S : A D
+S : C F

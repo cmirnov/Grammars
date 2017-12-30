@@ -1,0 +1,8 @@
+S : B D
+D : 3
+S : 3
+B : A D
+A : F B
+F : 4
+D : 3
+B : F D
