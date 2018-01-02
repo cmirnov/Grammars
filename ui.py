@@ -10,12 +10,13 @@ number = int(input())
 print("to run unit tests input 0 otherwise input 1")
 unit_tests = int(input())
 if unit_tests == 1:
-    grammar_path = input("input path to file with grammar:")
-    graph_path = input("input path to file with input:")
+    print("paths have to look like \"path\"")
+    grammar_path = input("input path to file with grammar: ")
+    graph_path = input("input path to file with input: ")
     if number == 1:
         closure.run(grammar_path, graph_path)
     if number == 2:
-    	nonterminal = input("input first nonterminal:")
+    	nonterminal = input("input first nonterminal: ")
         gll.run(grammar_path, graph_path, nonterminal)
     if number == 3:
         bottom_up.run(grammar_path, graph_path)
