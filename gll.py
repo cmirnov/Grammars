@@ -1,6 +1,7 @@
 import parser
 import time
 import sys
+import answer as an
 
 
 class State:
@@ -126,6 +127,22 @@ def calc_result(nonterminal, paths):
             ans_path.add(val)
     return ans
 
+def check_small(graph, idx):
+    if idx == 3:
+        if len(graph) == 2652:
+            print("passed")
+        else:
+            print("fail")
+        return
+    for edge in graph:
+        if [edge.p1, edge.n, edge.p2] not in an.small[idx] and edge.n == "S":
+            print("fail")
+            return
+    for edge in an.small[idx]:
+        if Ans(edge[0], edge[1], edge[2]) not in graph:
+            print("fail")
+            return
+    print("passed")
 
 def run(grammar_path, graph_path, nonterminal):
     graphGrammar, start, end, _ = parser.parse_grammar(grammar_path)
@@ -158,12 +175,12 @@ def run_small():
     name_graphs = ["1/graph.txt", "2/graph.txt", "3/graph.txt", "4/graph.txt"]
     path_grammar = "data/small/"
     name_grammars = ["1/automata.txt", "2/automata.txt", "3/automata.txt", "4/automata.txt"]
-    for name_grammar in name_grammars:
-        for name_graph in name_graphs:
-            graphGrammar, start, end, _ = parser.parse_grammar(path_grammar + name_grammar)
-            graph, size = parser.parse_graph(path_graph + name_graph)
-            ans = GLL(graph, graphGrammar, start, end, "S", size)
-            print("\r" + name_grammar + " " + name_graph + ": " + str(calc_result("S", ans)) + "\n")
+    for i in range(4):
+        graphGrammar, start, end, _ = parser.parse_grammar(path_grammar + name_grammars[i])
+        graph, size = parser.parse_graph(path_graph + name_graphs[i])
+        ans = GLL(graph, graphGrammar, start, end, "S", size)
+        print(name_grammars[i] + " " + name_graphs[i])
+        check_small(ans, i)
 
 
 if __name__ == '__main__':

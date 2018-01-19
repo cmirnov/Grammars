@@ -3,6 +3,7 @@ import time
 import collections
 import gc
 import sys
+import answer
 
 def solver(graph, grammar, start, end, sizeGrammar, sizeGraph):
     gc.enable()
@@ -10,7 +11,7 @@ def solver(graph, grammar, start, end, sizeGrammar, sizeGraph):
     run = True
     idx = 0
     while run:
-        print("iteration #" + str(idx))
+        #print("iteration #" + str(idx))
         idx += 1
         run = False
         for graph_edge in graph:
@@ -24,9 +25,9 @@ def solver(graph, grammar, start, end, sizeGrammar, sizeGraph):
                     p_to = p_to_grammar * sizeGraph + p_to_graph
                     if grammar_edge.s not in matrix[p_from][p_to]:
                         matrix[p_from][p_to].append(graph_edge.s)
-        print("matrix has been updated")
+        #print("matrix has been updated")
         for nonterminal in start:
-            print("new edges with nonterminal:" + str(nonterminal))
+            #print("new edges with nonterminal:" + str(nonterminal))
             for node in start[nonterminal]:
                 for i in range(sizeGraph):
                     history = set()
@@ -57,6 +58,25 @@ def calc_result(nonterminal, graph):
         if edge.s == nonterminal:
             ans += 1
     return ans
+
+def check_small(graph, idx):
+    if idx == 3:
+        if calc_result("S", graph) == 2652:
+            print("passed")
+        else:
+            print("fail");
+        return
+    for edge in graph:
+        if edge.s == "S":
+            if [edge.begin,edge.s,edge.end] not in answer.small[idx]:
+                print("fail")
+                return
+    for edge in answer.small[idx]:
+        if parser.Edge(edge[0], edge[2], edge[1]) not in graph:
+            print("fail2")
+            return
+    print("passed")
+    
 
 def run(grammar_path, graph_path, nonterminal):
     graph_grammar, start, end, size_grammar = parser.parse_grammar(grammar_path)
@@ -89,12 +109,13 @@ def run_small():
     name_graphs = ["1/graph.txt", "2/graph.txt", "3/graph.txt", "4/graph.txt"]
     path_grammar = "data/small/"
     name_grammars = ["1/automata.txt", "2/automata.txt", "3/automata.txt", "4/automata.txt"]
-    for name_grammar in name_grammars:
-        for name_graph in name_graphs:
-            graph_grammar, start, end, size_grammar = parser.parse_grammar(path_grammar + name_grammar)
-            graph, size_graph = parser.parse_graph(path_graph + name_graph)
-            ans = solver(graph, graph_grammar, start, end, size_grammar, size_graph)
-            print("\r" + name_grammar + " " + name_graph + ": " + str(calc_result("S", ans)))
+    for i in range(4):
+        graph_grammar, start, end, size_grammar = parser.parse_grammar(path_grammar + name_grammars[i])
+        graph, size_graph = parser.parse_graph(path_graph + name_graphs[i])
+        ans = solver(graph, graph_grammar, start, end, size_grammar, size_graph)
+        print(name_grammars[i] + " " + name_graphs[i])
+        check_small(ans,i)
+        print()
 
 
 if __name__ == '__main__':

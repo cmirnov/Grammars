@@ -1,6 +1,6 @@
 import parser
 import sys
-
+import answer
 
 class GrammarRule:
     def __init__(self, list):
@@ -52,6 +52,23 @@ def calc_result(matrix, size):
                 ans += 1
     return ans
 
+def check_small(matrix, idx, size):
+    ans = 0
+    for i in range(size):
+        for j in range(size):
+            for val in matrix[i][j]:
+                if val == "S":
+                    if [i, val, j] not in answer.small[idx]:
+                        print("fail")
+                        return
+                    ans += 1
+                   
+    if ans != len(answer.small[idx]):
+        print("fail")
+        return
+    print("passed")
+
+
 
 def run(grammar_path, graph_path):
     grammar = parse_grammar(grammar_path)
@@ -85,12 +102,19 @@ def run_small():
     name_graphs = ["1/graph.txt", "2/graph.txt", "3/graph.txt", "4/graph.txt"]
     path_grammar = "data/small/"
     name_grammars = ["1/hom.txt", "2/hom.txt", "3/hom.txt", "4/hom.txt"]
-    for name_grammar in name_grammars:
-        for name_graph in name_graphs:
-            grammar = parse_grammar(path_grammar + name_grammar)
-            graph, size = parser.parse_graph(path_graph + name_graph)
-            matrix = solver(grammar, graph, size)
-            print(name_grammar + " " + name_graph + ": " + str(calc_result(matrix, size)))
+    for i in range(4):
+        grammar = parse_grammar(path_grammar + name_grammars[i])
+        graph, size = parser.parse_graph(path_graph + name_graphs[i])
+        matrix = solver(grammar, graph, size)
+        print(name_grammars[i] + " " + name_graphs[i])
+        if i < 3:
+            check_small(matrix, i, size)
+        else:
+            num = calc_result(matrix, size)
+            if num == 2652:
+                print("passed")
+            else:
+                print("fail")
 
 if __name__ == '__main__':
 
