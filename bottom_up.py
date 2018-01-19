@@ -2,7 +2,7 @@ import parser
 import time
 import collections
 import gc
-
+import sys
 
 def solver(graph, grammar, start, end, sizeGrammar, sizeGraph):
     gc.enable()
@@ -47,7 +47,7 @@ def solver(graph, grammar, start, end, sizeGrammar, sizeGraph):
                                 for char in matrix[temp][j]:
                                         queue.append(j)
                                         history.add(j)
-					break
+                                        break
     return graph
 
 
@@ -60,12 +60,18 @@ def calc_result(nonterminal, graph):
 
 def run(grammar_path, graph_path, nonterminal):
     graph_grammar, start, end, size_grammar = parser.parse_grammar(grammar_path)
-    graph, size = parser.parse_graph(graph_path)
+    graph, size_graph = parser.parse_graph(graph_path)
     matrix = solver(graph, graph_grammar, start, end, size_grammar, size_graph)
-    print("done")
+    for edge in matrix:
+        if not edge.s.isdigit():
+        	print(edge)    
+    print(calc_result("S", matrix))
 
+def run_all():
+    run_big()
+    run_small()
 
-def run_tests():
+def run_big():
     path_graph = "data/graphs/"
     name_graphs = ["skos.dot", "generations.dot", "travel.dot", "univ-bench.dot", "atom-primitive.dot",
              "biomedical-mesure-primitive.dot", "foaf.dot", "people_pets.dot", "funding.dot", "wine.dot", "pizza.dot"]
@@ -77,3 +83,37 @@ def run_tests():
             graph, size_graph = parser.parse_graph(path_graph + name_graph)
             ans = solver(graph, graph_grammar, start, end, size_grammar, size_graph)
             print("\r" + name_grammar + " " + name_graph + ": " + str(calc_result("S", ans)))
+
+def run_small():
+    path_graph = "data/small/"
+    name_graphs = ["1/graph.txt", "2/graph.txt", "3/graph.txt", "4/graph.txt"]
+    path_grammar = "data/small/"
+    name_grammars = ["1/automata.txt", "2/automata.txt", "3/automata.txt", "4/automata.txt"]
+    for name_grammar in name_grammars:
+        for name_graph in name_graphs:
+            graph_grammar, start, end, size_grammar = parser.parse_grammar(path_grammar + name_grammar)
+            graph, size_graph = parser.parse_graph(path_graph + name_graph)
+            ans = solver(graph, graph_grammar, start, end, size_grammar, size_graph)
+            print("\r" + name_grammar + " " + name_graph + ": " + str(calc_result("S", ans)))
+
+
+if __name__ == '__main__':
+
+    if len(sys.argv) < 3:
+        print("number of arguments < 3")
+        sys.exit()
+
+    graph_grammar, start, end, size_grammar = parser.parse_grammar(sys.argv[1])
+    graph, size_graph = parser.parse_graph(sys.argv[2])
+    ans = solver(graph, graph_grammar, start, end, size_grammar, size_graph)
+    if len(sys.argv) == 3:
+        for edge in ans:
+            if not edge.s.isdigit():
+        	    print(edge) 
+    else:
+        with open(sys.argv[3],'w') as f:
+            for edge in ans:
+                if not edge.s.isdigit():
+                    f.write('\n'.join(map(str,edge)))
+
+

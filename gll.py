@@ -10,7 +10,7 @@ class State:
         self.stackPointer = int(stack)
 
     def __hash__(self):
-        return  self.stackPointer ^ self.graphPointer ^ self.grammarPointer
+        return self.stackPointer ^ self.graphPointer ^ self.grammarPointer
 
     def __eq__(self, other):
         return self.grammarPointer == other.grammarPointer and self.graphPointer == other.graphPointer and self.stackPointer == other.stackPointer
@@ -40,6 +40,10 @@ class Ans:
     def __hash__(self):
         return self.p1 ^ self.p2
 
+    def __str__(self):
+        return str(self.p1) + " " + str(self.n) + " " +str(self.p2) 
+
+
 animation = "|/-\\"
 
 
@@ -66,7 +70,8 @@ def GLL(graph, graphGrammar, start, end, firstNonTerminal, size):
         for edgeGrammar in graphGrammar:
             if int(edgeGrammar.begin) == int(state.grammarPointer):
                 for edgeGraph in graph:
-                    if state.grammarPointer == int(edgeGrammar.begin) and state.graphPointer == int(edgeGraph.begin) and edgeGrammar.s == edgeGraph.s:
+                    if state.grammarPointer == int(edgeGrammar.begin) and state.graphPointer == int(
+                            edgeGraph.begin) and edgeGrammar.s == edgeGraph.s:
                         new_state = State(int(edgeGrammar.end), int(edgeGraph.end), state.stackPointer)
                         if new_state not in history:
                             work_queue.append(new_state)
@@ -78,10 +83,11 @@ def GLL(graph, graphGrammar, start, end, firstNonTerminal, size):
                         new_stack_edge = parser.Edge(len(stack_state), state.stackPointer, edgeGrammar.end)
                         stack_state.append(new_stack_state)
                     else:
-                        new_stack_edge = parser.Edge(stack_state.index(new_stack_state), state.stackPointer, edgeGrammar.end)
+                        new_stack_edge = parser.Edge(stack_state.index(new_stack_state), state.stackPointer,
+                                                     edgeGrammar.end)
                     if new_stack_edge not in stack_edge:
                         stack_edge.add(new_stack_edge)
-                    if stack_state[new_stack_edge.begin] in executed_stack_state: #add new states
+                    if stack_state[new_stack_edge.begin] in executed_stack_state:  # add new states
                         for obj in executed_stack_state[stack_state[new_stack_edge.begin]]:
                             new_state = State(int(new_stack_edge.s), obj[1], new_stack_edge.end)
                             if new_state not in history:
@@ -101,9 +107,11 @@ def GLL(graph, graphGrammar, start, end, firstNonTerminal, size):
                         if new_state not in history:
                             history.add(new_state)
                             work_queue.append(new_state)
-                answer.add(Ans(stack_state[state.stackPointer].pointer, stack_state[state.stackPointer].nonterminal, state.graphPointer))
+                answer.add(Ans(stack_state[state.stackPointer].pointer, stack_state[state.stackPointer].nonterminal,
+                               state.graphPointer))
                 if stack_state[state.stackPointer] in executed_stack_state:
-                    executed_stack_state[stack_state[state.stackPointer]].append([state.grammarPointer, state.graphPointer])
+                    executed_stack_state[stack_state[state.stackPointer]].append(
+                        [state.grammarPointer, state.graphPointer])
                 else:
                     executed_stack_state[stack_state[state.stackPointer]] = [[state.grammarPointer, state.graphPointer]]
     return answer
@@ -111,9 +119,11 @@ def GLL(graph, graphGrammar, start, end, firstNonTerminal, size):
 
 def calc_result(nonterminal, paths):
     ans = 0
+    ans_path = set()
     for val in paths:
         if val.n == nonterminal:
             ans += 1
+            ans_path.add(val)
     return ans
 
 
@@ -121,13 +131,19 @@ def run(grammar_path, graph_path, nonterminal):
     graphGrammar, start, end, _ = parser.parse_grammar(grammar_path)
     graph, size = parser.parse_graph(graph_path)
     matrix = GLL(graph, graphGrammar, start, end, nonterminal, size)
-    print("done")
-    
-    
-def run_tests():
+    for val in matrix:
+        print(val)
+    print(calc_result(nonterminal, matrix))
+
+def run_all():
+    run_big()
+    run_small()
+
+def run_big():
     path_graph = "data/graphs/"
     name_graphs = ["skos.dot", "generations.dot", "travel.dot", "univ-bench.dot", "atom-primitive.dot",
-             "biomedical-mesure-primitive.dot", "foaf.dot", "people_pets.dot", "funding.dot", "wine.dot", "pizza.dot"]
+                   "biomedical-mesure-primitive.dot", "foaf.dot", "people_pets.dot", "funding.dot", "wine.dot",
+                   "pizza.dot"]
     path_grammar = "data/grammars/"
     name_grammars = ["Q1_automata.txt", "Q2_automata.txt"]
     for name_grammar in name_grammars:
@@ -135,5 +151,34 @@ def run_tests():
             graphGrammar, start, end, _ = parser.parse_grammar(path_grammar + name_grammar)
             graph, size = parser.parse_graph(path_graph + name_graph)
             ans = GLL(graph, graphGrammar, start, end, "S", size)
-            print("\r" + name_grammar + " " + name_graph + ": " + str(calc_result("S", ans)))
-            
+            print("\r" + name_grammar + " " + name_graph + ": " + str(calc_result("S", ans)) + "\n")
+
+def run_small():
+    path_graph = "data/small/"
+    name_graphs = ["1/graph.txt", "2/graph.txt", "3/graph.txt", "4/graph.txt"]
+    path_grammar = "data/small/"
+    name_grammars = ["1/automata.txt", "2/automata.txt", "3/automata.txt", "4/automata.txt"]
+    for name_grammar in name_grammars:
+        for name_graph in name_graphs:
+            graphGrammar, start, end, _ = parser.parse_grammar(path_grammar + name_grammar)
+            graph, size = parser.parse_graph(path_graph + name_graph)
+            ans = GLL(graph, graphGrammar, start, end, "S", size)
+            print("\r" + name_grammar + " " + name_graph + ": " + str(calc_result("S", ans)) + "\n")
+
+
+if __name__ == '__main__':
+
+    if len(sys.argv) < 3:
+        print("number of arguments < 3")
+        sys.exit()
+
+    graphGrammar, start, end, _ = parser.parse_grammar(sys.argv[1])
+    graph, size = parser.parse_graph(sys.argv[2])
+    ans = GLL(graph, graphGrammar, start, end, "S", size)
+    if len(sys.argv) == 3:
+        for edge in ans:
+            print(edge) 
+    else:
+        with open(sys.argv[3],'w') as f:
+            for edge in ans:
+                f.write('\n' + str(edge))

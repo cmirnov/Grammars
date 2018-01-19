@@ -1,4 +1,5 @@
 import parser
+import sys
 
 
 class GrammarRule:
@@ -56,8 +57,17 @@ def run(grammar_path, graph_path):
     grammar = parse_grammar(grammar_path)
     graph, size = parser.parse_graph(graph_path)
     matrix = solver(grammar, graph, size)
+    for i in range(size):
+        for j in range(size):
+            print(matrix[i][j], end=" ")
+        print()
+    print(calc_result(matrix, size))
+    
+def run_all():
+    run_big()
+    run_small()
 
-def run_tests():
+def run_big():
     path_graph = "data/graphs/"
     name_graphs = ["skos.dot", "generations.dot", "travel.dot", "univ-bench.dot", "atom-primitive.dot",
              "biomedical-mesure-primitive.dot", "foaf.dot", "people_pets.dot", "funding.dot", "wine.dot", "pizza.dot"]
@@ -69,5 +79,38 @@ def run_tests():
             graph, size = parser.parse_graph(path_graph + name_graph)
             matrix = solver(grammar, graph, size)
             print(name_grammar + " " + name_graph + ": " + str(calc_result(matrix, size)))
+
+def run_small():
+    path_graph = "data/small/"
+    name_graphs = ["1/graph.txt", "2/graph.txt", "3/graph.txt", "4/graph.txt"]
+    path_grammar = "data/small/"
+    name_grammars = ["1/hom.txt", "2/hom.txt", "3/hom.txt", "4/hom.txt"]
+    for name_grammar in name_grammars:
+        for name_graph in name_graphs:
+            grammar = parse_grammar(path_grammar + name_grammar)
+            graph, size = parser.parse_graph(path_graph + name_graph)
+            matrix = solver(grammar, graph, size)
+            print(name_grammar + " " + name_graph + ": " + str(calc_result(matrix, size)))
+
+if __name__ == '__main__':
+
+    if len(sys.argv) < 3:
+        print("number of arguments < 3")
+        sys.exit()
+
+    grammar = parse_grammar(sys.argv[1])
+    graph, size = parser.parse_graph(sys.argv[2])
+    matrix = solver(grammar, graph, size)
+    if len(sys.argv) == 3:
+        for i in range(size):
+            for j in range(size):
+                print(matrix[i][j], end=" ")
+            print() 
+    else:
+        with open(sys.argv[3],'w') as f:
+            for i in range(size):
+                for j in range(size):
+                    f.write(' ' + str(matrix[i][j]))
+                f.write('\n')
 
 

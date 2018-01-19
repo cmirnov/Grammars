@@ -13,6 +13,9 @@ class Edge:
     def __hash__(self):
         return self.begin ^ self.end
 
+    def __str__(self):
+        return str(self.begin) + " " + str(self.s) + " " + str(self.end)
+
 
 def parse_graph(filename):
     graph = []
