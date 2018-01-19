@@ -11,7 +11,7 @@ def solver(graph, grammar, start, end, sizeGrammar, sizeGraph):
     run = True
     idx = 0
     while run:
-        #print("iteration #" + str(idx))
+        print("iteration #" + str(idx))
         idx += 1
         run = False
         for graph_edge in graph:
@@ -25,9 +25,9 @@ def solver(graph, grammar, start, end, sizeGrammar, sizeGraph):
                     p_to = p_to_grammar * sizeGraph + p_to_graph
                     if grammar_edge.s not in matrix[p_from][p_to]:
                         matrix[p_from][p_to].append(graph_edge.s)
-        #print("matrix has been updated")
+        print("matrix has been updated")
         for nonterminal in start:
-            #print("new edges with nonterminal:" + str(nonterminal))
+            print("new edges with nonterminal:" + str(nonterminal))
             for node in start[nonterminal]:
                 for i in range(sizeGraph):
                     history = set()
