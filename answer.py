@@ -38,3 +38,30 @@ small = [[[3,"S",4],
 [[0,"S",1]]]
 
 
+big_auto = {
+"skos.dotQ1_automata.txt":810,
+"generations.dotQ1_automata.txt":2164,
+"travel.dotQ1_automata.txt":2499,
+"univ-bench.dotQ1_automata.txt":2540,
+"atom-primitive.dotQ1_automata.txt":15454,
+"biomedical-mesure-primitive.dotQ1_automata.txt":15156,
+"foaf.dotQ1_automata.txt":4118,
+"people_pets.dotQ1_automata.txt":9472,
+"funding.dotQ1_automata.txt":17634,
+"wine.dotQ1_automata.txt":66572,
+"pizza.dotQ1_automata.txt":56195,
+
+"skos.dotQ2_automata.txt":1,
+"generations.dotQ2_automata.txt":0,
+"travel.dotQ2_automata.txt":63,
+"univ-bench.dotQ2_automata.txt":81,
+"atom-primitive.dotQ2_automata.txt":122,
+"biomedical-mesure-primitive.dotQ2_automata.txt":2871,
+"foaf.dotQ2_automata.txt":10,
+"people_pets.dotQ2_automata.txt":37,
+"funding.dotQ2_automata.txt":1158,
+"wine.dotQ2_automata.txt":133,
+"pizza.dotQ2_automata.txt":1262,
+}
+
+

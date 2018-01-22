@@ -144,6 +144,12 @@ def check_small(graph, idx):
             return
     print("passed")
 
+def check_big(name, num):
+    if int(an.big_auto[name]) == int(num):
+        print("passed")
+    else:
+        print("fail")
+
 def run(grammar_path, graph_path, nonterminal):
     graphGrammar, start, end, _ = parser.parse_grammar(grammar_path)
     graph, size = parser.parse_graph(graph_path)
@@ -168,7 +174,8 @@ def run_big():
             graphGrammar, start, end, _ = parser.parse_grammar(path_grammar + name_grammar)
             graph, size = parser.parse_graph(path_graph + name_graph)
             ans = GLL(graph, graphGrammar, start, end, "S", size)
-            print("\r" + name_grammar + " " + name_graph + ": " + str(calc_result("S", ans)) + "\n")
+            print("\r" + name_grammar + " " + name_graph + ": ")
+            check_big(name_graph + name_grammar, str(calc_result("S", ans)))
 
 def run_small():
     path_graph = "data/small/"

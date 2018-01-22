@@ -73,9 +73,15 @@ def check_small(graph, idx):
                 return
     for edge in answer.small[idx]:
         if parser.Edge(edge[0], edge[2], edge[1]) not in graph:
-            print("fail2")
+            print("fail")
             return
     print("passed")
+
+def check_big(name, num):
+    if int(answer.big_auto[name]) == int(num):
+        print("passed")
+    else:
+        print("fail")
     
 
 def run(grammar_path, graph_path, nonterminal):
@@ -102,7 +108,8 @@ def run_big():
             graph_grammar, start, end, size_grammar = parser.parse_grammar(path_grammar + name_grammar)
             graph, size_graph = parser.parse_graph(path_graph + name_graph)
             ans = solver(graph, graph_grammar, start, end, size_grammar, size_graph)
-            print("\r" + name_grammar + " " + name_graph + ": " + str(calc_result("S", ans)))
+            print("\r" + name_grammar + " " + name_graph + ": ")
+            check_big(name_graph + name_grammar, calc_result("S", ans))
 
 def run_small():
     path_graph = "data/small/"

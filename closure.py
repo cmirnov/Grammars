@@ -68,6 +68,11 @@ def check_small(matrix, idx, size):
         return
     print("passed")
 
+def check_big(name, num):
+    if int(answer.big_auto[name]) == int(num):
+        print("passed")
+    else:
+        print("fail")
 
 
 def run(grammar_path, graph_path):
@@ -95,7 +100,12 @@ def run_big():
             grammar = parse_grammar(path_grammar + name_grammar)
             graph, size = parser.parse_graph(path_graph + name_graph)
             matrix = solver(grammar, graph, size)
-            print(name_grammar + " " + name_graph + ": " + str(calc_result(matrix, size)))
+            print(name_grammar + " " + name_graph + ": ")
+            if name_grammar == "Q1_hom.txt":
+                check_big(name_graph + "Q1_automata.txt", calc_result(matrix, size))
+            else:
+                check_big(name_graph + "Q2_automata.txt", calc_result(matrix, size))
+             
 
 def run_small():
     path_graph = "data/small/"
